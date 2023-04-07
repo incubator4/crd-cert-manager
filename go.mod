@@ -3,14 +3,15 @@ module auto-cert
 go 1.19
 
 require (
+	github.com/apache/apisix-ingress-controller v1.4.1
 	github.com/cert-manager/cert-manager v1.11.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
+	github.com/stretchr/testify v1.8.1
 	github.com/traefik/traefik/v2 v2.9.9
 	k8s.io/apimachinery v0.26.1
 	k8s.io/client-go v0.26.1
-	github.com/apache/apisix-ingress-controller v1.4.1
 )
 
 require (
@@ -44,6 +45,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

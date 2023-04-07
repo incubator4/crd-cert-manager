@@ -19,12 +19,10 @@ const (
 
 type Cert interface {
 	GetName() string
-	GetSecretName() string
+	GetSecretName() (string, error)
 	GetHosts() []string
 	GetAnnotations() map[string]string
 }
-
-//var _ Cert = (*DefaultCert)(nil)
 
 type DefaultCert struct {
 }

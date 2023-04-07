@@ -2,6 +2,7 @@ package traefik
 
 import (
 	"auto-cert/pkg/provider"
+	"fmt"
 	"github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 	"regexp"
 )
@@ -15,12 +16,12 @@ func (i *IngressRoute) GetName() string {
 	return i.IngressRoute.Name
 }
 
-func (i *IngressRoute) GetSecretName() string {
+func (i *IngressRoute) GetSecretName() (string, error) {
 	tls := i.Spec.TLS
 	if tls != nil {
-		return tls.SecretName
+		return tls.SecretName, nil
 	}
-	return ""
+	return "", fmt.Errorf("secret not found")
 }
 
 func (i *IngressRoute) GetHosts() []string {
@@ -36,7 +37,7 @@ func (i *IngressRoute) GetHosts() []string {
 
 	var hosts []string
 	for host := range hostMap {
-		hosts = append(hosts, host)
+		hosts = append(hosts, host[1:len(host)-1])
 	}
 
 	return hosts

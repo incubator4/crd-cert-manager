@@ -1,9 +1,11 @@
 package traefik
 
 import (
+	"auto-cert/pkg/cert"
 	"auto-cert/pkg/event"
 	"auto-cert/pkg/provider"
 	"context"
+	v1 "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
 	log "github.com/sirupsen/logrus"
 	traefikVersioned "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
 	"github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions"
@@ -23,17 +25,33 @@ func (p *Provider) Name() string {
 	return "traefik"
 }
 
-func (p *Provider) Provide(ctx context.Context, event event.Event) error {
+func (p *Provider) Provide(ctx context.Context, event event.Event) (*v1.Certificate, error) {
 
 	ing := IngressRoute{IngressRoute: *event.Object.(*v1alpha1.IngressRoute)}
-	issuer, err := provider.GetIssuer(&ing)
+
 	certName := provider.CertName(&ing)
 
-	if err == nil {
-		log.Infof("%s | %s | %+v | %s | %+v \n", ing.Name, certName, issuer, ing.GetSecretName(), ing.GetHosts())
+	issuer, err := provider.GetIssuer(&ing)
+	if err != nil {
+		return nil, err
 	}
 
-	return nil
+	secretName, err := ing.GetSecretName()
+	if err != nil {
+		return nil, err
+	}
+
+	hosts := ing.GetHosts()
+	log.Infof("%s | %s | %+v | %s | %+v \n", ing.Name, certName, issuer, secretName, hosts)
+
+	c := cert.NewCert(
+		cert.WithName(certName),
+		cert.WithIssuerRef(issuer),
+		cert.WithSecretName(secretName),
+		cert.WithHosts(hosts),
+	)
+
+	return c, nil
 }
 
 func (p *Provider) Init() error {

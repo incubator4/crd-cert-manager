@@ -61,9 +61,9 @@ func (p *ProviderAggregator) Provide(ctx context.Context, event event.Event) err
 
 	if err != nil {
 		log.Errorf(err.Error())
-	} else {
-		prd.Provide(ctx, event)
+		return nil
 	}
+	prd.Provide(ctx, event)
 
 	return nil
 }
