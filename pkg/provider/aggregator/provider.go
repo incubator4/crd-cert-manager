@@ -6,6 +6,7 @@ import (
 	"auto-cert/pkg/provider"
 	"context"
 	"fmt"
+	v1 "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
@@ -55,17 +56,17 @@ func NewAggregatorProvider(config config.Configurations) ProviderAggregator {
 	return p
 }
 
-func (p *ProviderAggregator) Provide(ctx context.Context, event event.Event) error {
+func (p *ProviderAggregator) Provide(ctx context.Context, event event.Event) (*v1.Certificate, error) {
 
 	prd, err := p.findProviderByName(event.ProviderName)
 
 	if err != nil {
 		log.Errorf(err.Error())
-		return nil
+		return nil, nil
 	}
 	prd.Provide(ctx, event)
 
-	return nil
+	return nil, nil
 }
 
 func (p *ProviderAggregator) Init() error {
